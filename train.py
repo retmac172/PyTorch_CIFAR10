@@ -14,14 +14,14 @@ def main(args):
 
     if bool(args.download_weights):
         CIFAR10Data.download_weights()
+        logger = WandbLogger(name=args.classifier, project="cifar10")
     else:
         seed_everything(0)
         os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_id
 
-        if args.logger == "wandb":
-            logger = WandbLogger(name=args.classifier, project="cifar10")
-        elif args.logger == "tensorboard":
-            logger = TensorBoardLogger("cifar10", name=args.classifier)
+
+        logger = WandbLogger(name=args.classifier, project="cifar10")
+
 
         checkpoint = ModelCheckpoint(monitor="acc/val", mode="max", save_last=False)
 
@@ -62,7 +62,7 @@ if __name__ == "__main__":
     parser.add_argument("--test_phase", type=int, default=0, choices=[0, 1])
     parser.add_argument("--dev", type=int, default=0, choices=[0, 1])
     parser.add_argument(
-        "--logger", type=str, default="tensorboard", choices=["tensorboard", "wandb"]
+        "--logger", type=str, default="wandb", choices=["tensorboard", "wandb"]
     )
 
     # TRAINER args
